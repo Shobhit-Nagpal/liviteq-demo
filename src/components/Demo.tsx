@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import React, { ChangeEvent, useState } from "react";
 
 export default function Demo() {
   const [media, setMedia] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
@@ -20,6 +20,32 @@ export default function Demo() {
   function handleClearMedia() {
     setMedia(null);
     setMediaType(null);
+  }
+
+  async function handleUploadMedia() {
+    if (media) {
+      setIsLoading(true);
+
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: JSON.stringify({ media }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          console.log("Media uploaded successfully");
+        } else {
+          console.error("Failed to upload media");
+        }
+      } catch (error) {
+        console.error("Error uploading media:", error);
+      }
+
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -39,19 +65,13 @@ export default function Demo() {
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
-                <label
-                  htmlFor="dropzone-file"
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 cursor-pointer"
+                <button
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+                  onClick={handleUploadMedia}
+                  disabled={!media || isLoading}
                 >
-                  Upload Media
-                  <input
-                    id="dropzone-file"
-                    type="file"
-                    accept="image/*, video/*"
-                    className="hidden"
-                    onChange={handleFileUpload}
-                  />
-                </label>
+                  {isLoading ? "Uploading..." : "Upload Media"}
+                </button>
               </div>
             </div>
             <div className="flex-shrink-0 relative">
@@ -144,7 +164,7 @@ export default function Demo() {
             <div className="space-y-5">
               <div className="space-y-3">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  Returned Media 
+                  Returned Media
                 </h2>
                 <p className="max-w-prose text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                   This container will show the returned image or video from an
