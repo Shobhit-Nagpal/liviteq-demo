@@ -5,6 +5,7 @@ import React, { ChangeEvent, useState } from "react";
 
 export default function Demo() {
   const [media, setMedia] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
 
   function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
@@ -12,11 +13,13 @@ export default function Demo() {
       const url = URL.createObjectURL(file);
 
       setMedia(url);
+      setMediaType(file.type.startsWith("image") ? "image" : "video");
     }
   }
 
   function handleClearMedia() {
     setMedia(null);
+    setMediaType(null);
   }
 
   return (
@@ -36,30 +39,42 @@ export default function Demo() {
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
-                <Link
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
-                  href="#"
+                <label
+                  htmlFor="dropzone-file"
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 cursor-pointer"
                 >
-                  Upload Image
-                </Link>
-                <Link
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-white px-8 text-sm font-medium text-gray-900 shadow transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
-                  href="#"
-                >
-                  Upload Video
-                </Link>
+                  Upload Media
+                  <input
+                    id="dropzone-file"
+                    type="file"
+                    accept="image/*, video/*"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                </label>
               </div>
             </div>
             <div className="flex-shrink-0 relative">
               {media ? (
                 <>
-                  <Image
-                    alt="Image"
-                    className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center"
-                    height="337"
-                    src={media}
-                    width="600"
-                  />
+                  {mediaType === "image" ? (
+                    <Image
+                      alt="Image"
+                      className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center"
+                      height="337"
+                      src={media}
+                      width="600"
+                    />
+                  ) : (
+                    <video
+                      className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center"
+                      height="337"
+                      width="600"
+                      controls
+                    >
+                      <source src={media} />
+                    </video>
+                  )}
                   <button
                     className="absolute top-2 right-2 bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center"
                     onClick={handleClearMedia}
@@ -105,7 +120,7 @@ export default function Demo() {
                         or drag and drop
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        Images, Videos (MAX. 800x400px)
                       </p>
                     </div>
                     <input
@@ -129,7 +144,7 @@ export default function Demo() {
             <div className="space-y-5">
               <div className="space-y-3">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  Returned Image or Video
+                  Returned Media 
                 </h2>
                 <p className="max-w-prose text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                   This container will show the returned image or video from an
