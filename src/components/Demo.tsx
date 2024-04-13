@@ -1,53 +1,90 @@
 "use client";
+import { baseURL } from "@/lib/url";
 import Image from "next/image";
 import React, { ChangeEvent, useState } from "react";
+import ReturnedImage from "./ReturnedImage";
+import ReturnedVideo from "./ReturnedVideo";
+
+interface ImageResponseData {
+  type: "image";
+  src: string;
+  totalCount: string;
+}
+
+interface VideoResponseData {
+  type: "video";
+  src: string;
+}
 
 export default function Demo() {
-  const [media, setMedia] = useState<string | null>(null);
-  const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
+  const [mediaURL, setMediaURL] = useState<string | null>(null);
+  const [media, setMedia] = useState<File | null>(null);
+  const [mediaURLType, setMediaURLType] = useState<"image" | "video" | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(false);
+  const [returnedMedia, setReturnedMedia] = useState<
+    ImageResponseData | VideoResponseData | null
+  >(null);
 
   function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const url = URL.createObjectURL(file);
 
-      setMedia(url);
-      setMediaType(file.type.startsWith("image") ? "image" : "video");
+      setMedia(file);
+      setMediaURL(url);
+      setMediaURLType(file.type.startsWith("image") ? "image" : "video");
     }
   }
 
   function handleClearMedia() {
     setMedia(null);
-    setMediaType(null);
+    setMediaURL(null);
+    setMediaURLType(null);
+    setReturnedMedia(null);
   }
 
   async function handleUploadMedia() {
-    if (media) {
+    if (mediaURL && media && mediaURLType) {
       setIsLoading(true);
 
       try {
-        const response = await fetch("/api/upload", {
+        const data = new FormData();
+        data.append("media", media);
+
+        const endpoint =
+          mediaURLType === "image" ? "/count/image" : "/count/video";
+        const url = `${baseURL}${endpoint}`;
+
+        const response = await fetch(url, {
           method: "POST",
-          body: JSON.stringify({ media }),
-          headers: {
-            "Content-Type": "application/json",
-          },
+          body: data,
         });
+
+        console.log(response);
 
         if (response.ok) {
           console.log("Media uploaded successfully");
+          const result = await response.json();
+          console.log(result);
+          setReturnedMedia(result);
         } else {
-          console.error("Failed to upload media");
+          const errorResponse = await response.json();
+          console.error(
+            "Failed to upload media. Server responded with:",
+            errorResponse,
+          );
         }
       } catch (error) {
         console.error("Error uploading media:", error);
       }
 
       setIsLoading(false);
+    } else {
+      console.log("No media to upload or media type is undefined.");
     }
   }
-
   return (
     <>
       <section className="py-12 lg:py-24 xl:py-32">
@@ -68,31 +105,37 @@ export default function Demo() {
                 <button
                   className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
                   onClick={handleUploadMedia}
-                  disabled={!media || isLoading}
+                  disabled={!mediaURL || isLoading}
                 >
                   {isLoading ? "Uploading..." : "Upload Media"}
                 </button>
               </div>
             </div>
             <div className="flex-shrink-0 relative">
-              {media ? (
+              {mediaURL ? (
                 <>
-                  {mediaType === "image" ? (
+                  {mediaURLType === "image" ? (
                     <Image
-                      alt="Image"
-                      className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center"
-                      height="337"
-                      src={media}
-                      width="600"
+                      alt="Uploaded Image"
+                      src={mediaURL}
+                      layout="responsive"
+                      width={600}
+                      height={337}
+                      objectFit="contain"
+                      className="rounded-xl max-w-[720px]"
                     />
                   ) : (
                     <video
                       className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center"
-                      height="337"
-                      width="600"
+                      style={{
+                        maxWidth: "1920px",
+                        maxHeight: "1080px",
+                        width: "100%",
+                        height: "auto",
+                      }}
                       controls
                     >
-                      <source src={media} />
+                      <source src={mediaURL} />
                     </video>
                   )}
                   <button
@@ -140,7 +183,7 @@ export default function Demo() {
                         or drag and drop
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Images, Videos (MAX. 800x400px)
+                        Images, Videos 
                       </p>
                     </div>
                     <input
@@ -160,8 +203,8 @@ export default function Demo() {
 
       <section className="py-13 lg:py-24 xl:py-32">
         <div className="container px-5 md:px-6">
-          <div className="flex flex-col items-center gap-7 lg:flex-row lg:gap-12 xl:gap-16">
-            <div className="space-y-5">
+          <div className={`flex flex-col items-center ${returnedMedia ? "justify-between" : null} gap-7 lg:flex-row lg:gap-12 xl:gap-16`}>
+            <div className="space-y-4">
               <div className="space-y-3">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   Returned Media
@@ -172,6 +215,20 @@ export default function Demo() {
                 </p>
               </div>
             </div>
+            {returnedMedia ? (
+              returnedMedia.type === "image" ? (
+              <div>
+                <ReturnedImage
+                  src={returnedMedia.src}
+                  totalCount={returnedMedia.totalCount}
+                />
+              </div>
+              ) : (
+              <div>
+                <ReturnedVideo src={returnedMedia.src} />
+              </div>
+              )
+            ) : null}
           </div>
         </div>
       </section>
