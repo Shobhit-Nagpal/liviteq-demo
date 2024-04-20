@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { ChangeEvent, useState } from "react";
 import ReturnedImage from "./ReturnedImage";
 import ReturnedVideo from "./ReturnedVideo";
+import { toast } from "sonner";
 
 interface ImageResponseData {
   type: "image";
@@ -62,27 +63,27 @@ export default function Demo() {
           body: data,
         });
 
-        console.log(response);
-
         if (response.ok) {
-          console.log("Media uploaded successfully");
           const result = await response.json();
-          console.log(result);
           setReturnedMedia(result);
+          toast.success("Cells detected!");
         } else {
           const errorResponse = await response.json();
           console.error(
             "Failed to upload media. Server responded with:",
             errorResponse,
           );
+          toast.error(errorResponse.error);
         }
       } catch (error) {
         console.error("Error uploading media:", error);
+        //@ts-ignore
+        toast.error(error);
       }
 
       setIsLoading(false);
     } else {
-      console.log("No media to upload or media type is undefined.");
+      toast("No media to upload");
     }
   }
   return (
@@ -183,7 +184,7 @@ export default function Demo() {
                         or drag and drop
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Images, Videos 
+                        Images, Videos
                       </p>
                     </div>
                     <input
@@ -203,7 +204,9 @@ export default function Demo() {
 
       <section className="py-13 lg:py-24 xl:py-32">
         <div className="container px-5 md:px-6">
-          <div className={`flex flex-col items-center ${returnedMedia ? "justify-between" : null} gap-7 lg:flex-row lg:gap-12 xl:gap-16`}>
+          <div
+            className={`flex flex-col items-center ${returnedMedia ? "justify-between" : null} gap-7 lg:flex-row lg:gap-12 xl:gap-16`}
+          >
             <div className="space-y-4">
               <div className="space-y-3">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
@@ -217,16 +220,16 @@ export default function Demo() {
             </div>
             {returnedMedia ? (
               returnedMedia.type === "image" ? (
-              <div>
-                <ReturnedImage
-                  src={returnedMedia.src}
-                  totalCount={returnedMedia.totalCount}
-                />
-              </div>
+                <div>
+                  <ReturnedImage
+                    src={returnedMedia.src}
+                    totalCount={returnedMedia.totalCount}
+                  />
+                </div>
               ) : (
-              <div>
-                <ReturnedVideo src={returnedMedia.src} />
-              </div>
+                <div>
+                  <ReturnedVideo src={returnedMedia.src} />
+                </div>
               )
             ) : null}
           </div>
