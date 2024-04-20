@@ -24,7 +24,7 @@ export default function CellCounting() {
               alt="Image"
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center"
               height="335"
-              src="/cell-counting.png"
+              src="/cell-counting.jpeg"
               width="600"
             />
           </div>

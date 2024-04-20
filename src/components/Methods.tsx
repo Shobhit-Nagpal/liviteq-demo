@@ -29,7 +29,7 @@ export default function Methods() {
               <Card className="flex-1">
                 <CardHeader className="pb-0">
                   <CardTitle>1. Hemocytometer</CardTitle>
-                  <CardDescription>
+                  <CardDescription className="py-4">
                     The hemocytometer is a specialized counting chamber that
                     allows for the precise calculation of cell concentration in
                     a given sample.
@@ -40,7 +40,7 @@ export default function Methods() {
                     alt="Image"
                     className="aspect-video overflow-hidden rounded-t-lg object-cover object-center"
                     height="225"
-                    src="/hemocytometer.png"
+                    src="/hemocytometer.jpg"
                     width="400"
                   />
                 </CardContent>
@@ -48,7 +48,7 @@ export default function Methods() {
               <Card className="flex-1">
                 <CardHeader className="pb-0">
                   <CardTitle>2. Automated Cell Counters</CardTitle>
-                  <CardDescription>
+                  <CardDescription className="py-4">
                     Automated cell counters use image analysis software to
                     quickly and accurately count cells in a sample.
                   </CardDescription>
@@ -56,9 +56,9 @@ export default function Methods() {
                 <CardContent className="pt-0">
                   <Image
                     alt="Image"
-                    className="aspect-video overflow-hidden rounded-t-lg object-cover object-center"
+                    className="aspect-video overflow-hidden rounded-t-lg object-contain object-center"
                     height="225"
-                    src="/counters.png"
+                    src="/automated-counter.jpg"
                     width="400"
                   />
                 </CardContent>

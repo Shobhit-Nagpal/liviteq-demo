@@ -92,7 +92,7 @@ export default function Demo() {
   }
   return (
     <>
-      <section className="py-12 lg:py-24 xl:py-32">
+      <section className="py-12 lg:py-20 xl:py-28">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-between gap-6 lg:flex-row lg:gap-12 xl:gap-16">
             <div className="space-y-4">
