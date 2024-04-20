@@ -9,6 +9,10 @@ import { toast } from "sonner";
 interface ImageResponseData {
   type: "image";
   src: string;
+  dimensions: {
+    width: string;
+    height: string;
+  };
   totalCount: string;
 }
 
@@ -202,7 +206,7 @@ export default function Demo() {
         </div>
       </section>
 
-      <section className="py-13 lg:py-24 xl:py-32">
+      <section className="bg-gray-200 py-13 lg:py-24 xl:py-32">
         <div className="container px-5 md:px-6">
           <div
             className={`flex flex-col items-center ${returnedMedia ? "justify-between" : null} gap-7 lg:flex-row lg:gap-12 xl:gap-16`}
@@ -224,6 +228,7 @@ export default function Demo() {
                   <ReturnedImage
                     src={returnedMedia.src}
                     totalCount={returnedMedia.totalCount}
+                    dimensions={returnedMedia.dimensions}
                   />
                 </div>
               ) : (

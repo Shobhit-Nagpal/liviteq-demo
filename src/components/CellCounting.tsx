@@ -3,7 +3,7 @@ import React from "react";
 
 export default function CellCounting() {
   return (
-    <section className="py-12 lg:py-24 xl:py-32">
+    <section className="bg-gray-200 py-12 lg:py-24 xl:py-32">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center gap-6 lg:flex-row lg:gap-12">
           <div className="space-y-4">
