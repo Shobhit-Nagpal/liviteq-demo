@@ -213,7 +213,7 @@ export default function Demo() {
           >
             <div className="space-y-4">
               <div className="space-y-3">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                <h2 className="text-3xl pt-10 font-bold tracking-tighter sm:text-5xl">
                   Returned Media
                 </h2>
                 <p className="max-w-prose text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
