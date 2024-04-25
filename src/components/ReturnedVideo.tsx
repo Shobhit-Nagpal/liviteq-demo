@@ -1,7 +1,7 @@
 import React from "react";
 
 type ReturnedVideoProps = {
-  src: string;
+  readonly src: string;
 }
 
 export default function ReturnedVideo({ src }: ReturnedVideoProps) {

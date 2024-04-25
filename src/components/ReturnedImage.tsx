@@ -2,16 +2,15 @@ import React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 type ReturnedImageProps = {
-  totalCount: string;
-  dimensions: {
+  readonly totalCount: string;
+  readonly dimensions: {
     width: string;
     height: string;
   };
-  src: string;
+  readonly src: string;
 };
 export default function ReturnedImage({ totalCount, dimensions, src }: ReturnedImageProps) {
   return (
-    <>
       <div className="flex flex-col items-center justify-center">
         <TransformWrapper>
           <TransformComponent>
@@ -22,6 +21,5 @@ export default function ReturnedImage({ totalCount, dimensions, src }: ReturnedI
           <p>Total count: {totalCount}</p>
         </div>
       </div>
-    </>
   );
 }
