@@ -2,6 +2,7 @@ import CellCounting from "@/components/CellCounting";
 import Demo from "@/components/Demo";
 import Importance from "@/components/Importance";
 import Methods from "@/components/Methods";
+import Note from "@/components/Note";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function HomePage() {
@@ -18,6 +19,7 @@ export default function HomePage() {
             },
           }}
         />
+        <Note />
         <section className="py-6 lg:py-12 xl:py-16">
           <h1 className="text-5xl font-bold tracking-tighter text-center">
             LiviTeq Demo
