@@ -6,6 +6,7 @@ import Note from "@/components/Note";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function HomePage() {
+  console.log("Test auto deployment")
   return (
     <main>
       <div className="bg-gray-50 dark:bg-gray-950">
